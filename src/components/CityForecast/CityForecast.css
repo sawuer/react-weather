@@ -1,0 +1,60 @@
+.CityForecast-locality {
+  text-align: center;
+  font-size: 20px;
+  transform: translatY(-50%);
+  margin-top: 25px;
+}
+.CityForecast-close {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background: rgba(255,255,255,0);
+}
+.CityForecast-main {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 35px;
+  transform: translatX(-50%);
+}
+.CityForecast-meta {
+  margin-top: 125px;
+  font-size: 17px;
+}
+.CityForecast-temp {
+  position: absolute;
+  top: 150px;
+  font-size: 30px;
+}
+.CityForecast-temp--day {
+  left: 90px;
+}
+.CityForecast-temp--night {
+  right: 90px;
+}
+.CityForest-buttons {
+  position: absolute;
+  bottom: 0;
+  left: 30px;
+  right: 30px;
+  border-top: 1px solid rgba(255,255,255,.4); 
+  overflow: hidden;
+  display: flex;
+  padding: 20px 0;
+}
+.CityForest-button {
+  border: none;
+  color: #fff;
+  background: rgba(255,255,255,0);
+  padding: 5px;
+  transition: 200ms;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.CityForest-button:hover,
+.CityForecast-button--active {
+  background: rgba(255,255,255,.2);
+}
