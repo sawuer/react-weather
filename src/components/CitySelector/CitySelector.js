@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './CitySelector.css';
 import CityForecast from '../CityForecast/CityForecast';
+import ErrorBadge from '../ErrorBadge/ErrorBadge';
 
 const API_KEY = 'ff4781d8-005f-4319-9140-9fac60c1f425';
 
@@ -8,46 +9,52 @@ class CitySelector extends Component {
   state = {
     searchField: '',
     cities: [],
-    selectedCity: {
-      country: "Казахстан",
-      lat: "43.238293",
-      lon: "76.945465",
-      name: "Алматы",
-    },
+    // selectedCity: {
+    //   country: "Казахстан",
+    //   lat: "43.238293",
+    //   lon: "76.945465",
+    //   name: "Алматы",
+    // },
     selectedCity: null,
+    error: false,
+    searchFault: false,
   }
 
   getCities () { // from Yandex Geocoder API
     fetch('https://geocode-maps.yandex.ru/1.x/?apikey=' 
       + API_KEY + '&format=json&geocode='
-      + this.state.searchField + '&results=50'
+      + this.state.searchField + '&results=100'
     )
     .then(resp => resp.json())
     .then(({ response: { GeoObjectCollection: { featureMember } } }) => {
+      /**
+       * Yandex Geocoder API не позволяет искать только городам
+       * поэтому здесь нужна фильтрация (locality - нас. пункт)
+       */
+      const cities = featureMember.filter(({ GeoObject: { metaDataProperty } }) => {
+        return metaDataProperty.GeocoderMetaData.kind === 'locality' ||
+          metaDataProperty.GeocoderMetaData.kind === 'province';
+      });
+      if (cities.length === 0) {
+        return this.setState({ searchFault: true });
+      }
       this.setState({ 
-        cities: featureMember
-          /**
-           * Yandex Geocoder API не позволяет искать только городам
-           * поэтому здесь нужна фильтрация (locality - нас. пункт)
-           */
-          .filter(({ GeoObject: { metaDataProperty } }) => {
-            return metaDataProperty.GeocoderMetaData.kind === 'locality'
-          })
-          .map(({ 
-            GeoObject: { Point, metaDataProperty: { GeocoderMetaData }, name } }) => {
-            return {
-              lon: Point.pos.split(' ')[0],
-              lat: Point.pos.split(' ')[1],
-              name,
-              country: GeocoderMetaData.AddressDetails.Country.CountryName
-            };
-          }),
-        });
-      console.log(this.state.cities);
+        cities: cities.map(({ 
+          GeoObject: { Point, metaDataProperty: { GeocoderMetaData }, description, name } }) => {
+          return {
+            lon: Point.pos.split(' ')[0],
+            lat: Point.pos.split(' ')[1],
+            name,
+            country: description
+          };
+        }),
+      });
+    })
+    .catch(_ => {
+      this.setState({ error: true });
     });
   }
 
-  
   selectCity (selectedCity) { 
     this.setState({ 
       selectedCity,
@@ -64,8 +71,11 @@ class CitySelector extends Component {
   searchInput (str) {
     clearTimeout(window.counter);
     this.setState({ 
+      cities: [],
       searchField: str,
       selectedCity: null,
+      error: false,
+      searchFault: false,
     });
     if (str === '') {
       return this.setState({ cities: [] })
@@ -90,7 +100,11 @@ class CitySelector extends Component {
                     onChange={e => this.searchInput(e.target.value)}
                   />
                 </div>
+                {this.state.error ? <ErrorBadge msg={'Не получается получить список городов'} /> : '' }
                 <div className="CitySelector-list">
+                  {this.state.searchFault ? 
+                    <div>Ничего не найдено. Попробуйте еще раз</div>
+                  : ''}
                   {this.state.cities.map((city, idx) => {
                     return (
                       <div 

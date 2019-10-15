@@ -3,6 +3,9 @@ export default {
     clouds: 'Облачно',
     clear: 'Ясно',
     rain: 'Дождь',
+    snow: 'Снег',
+    thunderstorm: 'Шторм',
+    drizzle: 'Мороз',
   },
   weekDaysShort: {
     mon: 'ПН',

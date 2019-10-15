@@ -30,10 +30,10 @@
   font-size: 30px;
 }
 .CityForecast-temp--day {
-  left: 90px;
+  left: 80px;
 }
 .CityForecast-temp--night {
-  right: 90px;
+  right: 80px;
 }
 .CityForest-buttons {
   position: absolute;
