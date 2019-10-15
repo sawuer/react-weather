@@ -23,6 +23,8 @@
 .CityForecast-meta {
   margin-top: 125px;
   font-size: 17px;
+  position: absolute;
+  bottom: 110px;
 }
 .CityForecast-temp {
   position: absolute;
